@@ -21,8 +21,8 @@ export const admins = sqliteTable("admins", {
 
 export const products_category = sqliteTable("categories", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name").notNull().unique(),
-  nameAr: text("name_ar"),
+  name: text("name"),
+  nameAr: text("name_ar").notNull().unique(),
   description: text("description"),
   descriptionAr: text("description_ar"),
   image: text("image"),
@@ -33,8 +33,8 @@ export const products_category = sqliteTable("categories", {
 export const product_subcategories = sqliteTable("subcategories", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   categoryId: integer("category_id").references(() => products_category.id),
-  name: text("name").notNull(),
-  nameAr: text("name_ar"),
+  name: text("name"),
+  nameAr: text("name_ar").notNull(),
   description: text("description"),
   descriptionAr: text("description_ar"),
   isActive: integer("is_active", { mode: "boolean" }).default(true),
@@ -43,8 +43,8 @@ export const product_subcategories = sqliteTable("subcategories", {
 
 export const product_brands = sqliteTable("brands", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name").notNull().unique(),
-  nameAr: text("name_ar"),
+  name: text("name"),
+  nameAr: text("name_ar").notNull().unique(),
   description: text("description"),
   descriptionAr: text("description_ar"),
   image: text("image"),
@@ -54,9 +54,8 @@ export const product_brands = sqliteTable("brands", {
 
 export const products = sqliteTable("products", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name").notNull(),
-  nameAr: text("name_ar"),
-  slug: text("slug").notNull().unique(),
+  name: text("name"),
+  nameAr: text("name_ar").notNull(),
   description: text("description"),
   descriptionAr: text("description_ar"),
   imageUrl: text("image_url"),
@@ -69,6 +68,7 @@ export const products = sqliteTable("products", {
     () => product_subcategories.id,
   ),
   stockQuantity: integer("stock_quantity").default(0),
+  type: text("type").default("unit"),
   isActive: integer("is_active", { mode: "boolean" }).default(true),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
@@ -85,7 +85,6 @@ export const stockMovements = sqliteTable("stock_movements", {
 export const orders = sqliteTable("orders", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   userId: integer("user_id").references(() => users.id),
-  totalAmount: real("total_amount").notNull(),
   status: text("status").default("pending"),
   paymentStatus: text("payment_status").default("unpaid"),
   paymentMethod: text("payment_method"),
@@ -103,21 +102,22 @@ export const orderItems = sqliteTable("order_items", {
 export const addresses = sqliteTable("addresses", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   userId: integer("user_id").references(() => users.id),
-  fullName: text("full_name").notNull(),
-  phone: text("phone"),
-  street: text("street").notNull(),
-  city: text("city").notNull(),
-  state: text("state"),
-  postalCode: text("postal_code"),
-  country: text("country").default("Egypt"),
+  orderId: integer("order_id").references(() => orders.id),
+  fullName: text("full_name"),
+  phone: text("phone").notNull(),
+  street: text("street"),
+  city: text("city"),
+  building: text("building"),
+  floor: text("floor"),
 });
 
 export const payments = sqliteTable("payments", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   orderId: integer("order_id").references(() => orders.id),
   amount: real("amount").notNull(),
-  method: text("method").notNull(),
+  method: text("method").notNull().default("cash"),
   status: text("status").default("pending"),
+  deliveryCost: real("delivery_cost"),
   transactionId: text("transaction_id"),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
@@ -147,7 +147,20 @@ export const promoCodeUsages = sqliteTable("promo_code_usages", {
 
 export const offers = sqliteTable("offers", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  image: text("image"),
   productId: integer("product_id").references(() => products.id),
   categoryId: integer("category_id").references(() => products_category.id),
   brandId: integer("brand_id").references(() => product_brands.id),
+});
+
+export const delivery = sqliteTable("delivery", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  city: text("city"),
+  deliveryCost: real("delivery_cost"),
+});
+
+export const favorites = sqliteTable("favorites", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id").references(() => users.id),
+  productId: integer("product_id").references(() => products.id),
 });

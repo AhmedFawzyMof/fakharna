@@ -16,8 +16,10 @@ import { Search } from "lucide-react";
 
 export default function ProductsFilter({
   categories,
+  brands,
   searchParams,
   categoryId,
+  brandId,
   search,
 }: any) {
   const router = useRouter();
@@ -49,7 +51,26 @@ export default function ProductsFilter({
             <SelectItem value="all">All Categories</SelectItem>
             {categories.map((cat: any) => (
               <SelectItem key={cat.id} value={cat.id.toString()}>
-                {cat.name}
+                {cat.nameAr}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="companies">Companies</Label>
+        <Select
+          onValueChange={(value) => updateParams("brandId", value)}
+          value={brandId?.toString() || "all"}
+        >
+          <SelectTrigger id="companies" className="border-primary/50 border">
+            <SelectValue placeholder="Select a company" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Campanies</SelectItem>
+            {brands.map((cat: any) => (
+              <SelectItem key={cat.id} value={cat.id.toString()}>
+                {cat.nameAr}
               </SelectItem>
             ))}
           </SelectContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -31,35 +31,52 @@ export default function PaginationComponent({
 
   if (totalProducts === 0) return null;
 
+  const getVisiblePages = () => {
+    if (totalPages <= 3) return [...Array(totalPages)].map((_, i) => i + 1);
+
+    if (currentPage === 1) return [1, 2, 3];
+    if (currentPage === totalPages)
+      return [totalPages - 2, totalPages - 1, totalPages];
+    return [currentPage - 1, currentPage, currentPage + 1];
+  };
+
+  const visiblePages = getVisiblePages();
+
   return (
-    <Pagination className="mt-8">
+    <Pagination dir="rtl" className="mt-8">
       <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            onClick={() => updatePage(Math.max(1, currentPage - 1))}
-            aria-disabled={currentPage === 1}
-            tabIndex={currentPage === 1 ? -1 : undefined}
-            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-          />
-        </PaginationItem>
-
-        {[...Array(totalPages)].map((_, i) => (
-          <PaginationItem key={i}>
-            <PaginationLink
-              onClick={() => updatePage(i + 1)}
-              isActive={currentPage === i + 1}
-            >
-              {i + 1}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
-
         <PaginationItem>
           <PaginationNext
             onClick={() => updatePage(Math.min(totalPages, currentPage + 1))}
             aria-disabled={currentPage === totalPages}
             tabIndex={currentPage === totalPages ? -1 : undefined}
-            className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+            className={
+              currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+            }
+          />
+        </PaginationItem>
+
+        <div dir="ltr" className="flex space-x-2">
+          {visiblePages.map((page) => (
+            <PaginationItem key={page}>
+              <PaginationLink
+                onClick={() => updatePage(page)}
+                isActive={currentPage === page}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+        </div>
+
+        <PaginationItem>
+          <PaginationPrevious
+            onClick={() => updatePage(Math.max(1, currentPage - 1))}
+            aria-disabled={currentPage === 1}
+            tabIndex={currentPage === 1 ? -1 : undefined}
+            className={
+              currentPage === 1 ? "pointer-events-none opacity-50" : ""
+            }
           />
         </PaginationItem>
       </PaginationContent>

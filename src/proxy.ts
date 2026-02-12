@@ -1,76 +1,57 @@
+// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
+const ALLOWED_ORIGIN = "http://localhost:5173";
+const PUBLIC_ROUTES = ["/api/admin/login"];
+
+function withCors(response: NextResponse) {
+  response.headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+  response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+  );
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization",
+  );
+  response.headers.set("Access-Control-Allow-Credentials", "true");
+  return response;
+}
+
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "http://localhost:5173",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Credentials": "true",
-  };
-
   if (req.method === "OPTIONS") {
-    return new NextResponse(null, { status: 200, headers: corsHeaders });
+    return withCors(new NextResponse(null, { status: 204 }));
   }
 
-  console.log(pathname);
-  if (pathname.startsWith("/api/admin/login")) {
-    const response = NextResponse.next();
-    Object.entries(corsHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
-
-    return response;
+  if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
+    return withCors(NextResponse.next());
   }
 
-  const auth = req.headers.get("authorization");
-  const token = auth?.split(" ")[1];
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : null;
 
   if (!token) {
-    return NextResponse.json(
-      { message: "Unauthorized" },
-      {
-        status: 401,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods":
-            "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      },
+    return withCors(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 }),
     );
   }
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET!);
-    const response = NextResponse.next();
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-    );
-    response.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization",
-    );
-    return response;
+    jwt.verify(token, process.env.NEXTAUTH_SECRET!);
+    return withCors(NextResponse.next());
   } catch {
-    return NextResponse.json(
-      { message: "Invalid token" },
-      {
-        status: 401,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods":
-            "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      },
+    return withCors(
+      NextResponse.json({ message: "Invalid token" }, { status: 401 }),
     );
   }
 }
 
-export const config = { matcher: ["/api/admin/:path*"] };
+export const config = {
+  matcher: ["/api/admin/:path*"],
+};

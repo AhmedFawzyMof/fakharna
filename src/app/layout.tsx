@@ -1,9 +1,10 @@
 import type React from "react";
-import { Cairo, Geist, Playfair_Display } from "next/font/google";
+import { Cairo, Geist } from "next/font/google";
 import "@/app/globals.css";
 import { Header } from "@/components/header";
 import Providers from "./providers";
 import { Toaster } from "@/components/ui/sonner";
+import { BottomTabs } from "@/components/tabs";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -11,50 +12,52 @@ const geistSans = Geist({
 });
 
 const cairo = Cairo({
-  subsets: ["latin"],
+  subsets: ["latin", "arabic"],
   variable: "--font-cairo",
   weight: ["400", "500", "600", "700"],
 });
 
 export const metadata = {
-  title: "Natura Beauty - Natural Skincare Products",
-  description: "Premium natural skincare products for your daily routine",
+  title: "Eldokanh Market - Frozen Food & Online Supermarket ",
+  description:
+    "Eldokanh Market is your trusted online supermarket in Cairo. Order frozen food, groceries, vegetables, meat, dairy and daily essentials delivered fast to your door.",
   authors: [
     { name: "Mohanad Refaye", url: "https://github.com/enghenzoo" },
     { name: "Ahmed Moftah", url: "https://github.com/AhmedFawzyMof" },
   ],
   keywords: [
-    "natural skincare",
-    "skincare",
-    "beauty",
-    "glowup",
-    "naturalskincare",
-    "organic",
-    "vegan",
-    "crueltyfree",
-    "sustainable",
-    "ecofriendly",
-    "greenbeauty",
-    "cleanbeauty",
-    "selfcare",
-    "wellness",
-    "healthyskin",
-    "radiantskin",
-    "skincareroutine",
-    "skincareproducts",
-    "facialcare",
-    "bodycare",
-    "haircare",
-    "makeup",
-    "cosmetics",
-    "beautyroutine",
-    "skincaretips",
-    "skincarecommunity",
-    "beautyblogger",
-    "skincareaddict",
-    "glowingskin",
-    "naturalingredients",
-    "holisticbeauty",
+    "online supermarket Cairo",
+    "سوبر ماركت اونلاين القاهرة",
+    "frozen food Egypt",
+    "أطعمة مجمدة مصر",
+    "frozen vegetables",
+    "خضار مجمدة",
+    "frozen meat",
+    "لحوم مجمدة",
+    "grocery delivery Cairo",
+    "توصيل بقالة القاهرة",
+    "online grocery Egypt",
+    "بقالة اونلاين مصر",
+    "supermarket online",
+    "سوبر ماركت اونلاين",
+    "food delivery Cairo",
+    "توصيل طعام القاهرة",
+    "fresh vegetables",
+    "خضار طازجة",
+    "dairy products",
+    "منتجات ألبان",
+    "frozen chicken",
+    "دجاج مجمد",
+    "frozen seafood",
+    "مأكولات بحرية مجمدة",
+    "market Egypt",
+    "سوق مصر",
+    "daily essentials",
+    "الاحتياجات اليومية",
+    "home delivery groceries",
+    "توصيل البقالة للمنزل",
+    "best supermarket Cairo",
+    "أفضل سوبر ماركت القاهرة",
   ],
 };
 
@@ -74,10 +77,11 @@ export default function RootLayout({
       lang="en"
       className={`${cairo.variable} ${geistSans.variable} antialiased`}
     >
-      <body>
+      <body className="font-[var(--font-cairo)] bg-slate-50">
         <Providers>
           <Header />
           {children}
+          <BottomTabs />
         </Providers>
         <Toaster position="top-right" />
       </body>

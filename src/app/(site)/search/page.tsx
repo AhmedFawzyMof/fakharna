@@ -3,64 +3,77 @@ import { getAllCategories } from "@/models/categories";
 import ProductsFilter from "@/components/products-filter";
 import { headers } from "next/headers";
 import PaginationComponent from "@/components/pagination";
+import { getAllBrands } from "@/models/brands";
+import { getAllProducts } from "@/models/products";
 
 interface ProductsPageProps {
   searchParams: Promise<{
     page?: string;
     categoryId?: string;
+    brandId: string;
     search?: string;
   }>;
 }
 
-const PRODUCTS_PER_PAGE = 24;
+const PRODUCTS_PER_PAGE = 20;
 
 export default async function SearchPage(props: ProductsPageProps) {
   const params = await props.searchParams;
-  const host = (await headers()).get("host");
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-  const baseUrl = `${protocol}://${host}`;
 
   const currentPage = Number(params.page || 1);
   const categoryId = params.categoryId ? Number(params.categoryId) : undefined;
+  const brandId = params.brandId ? Number(params.brandId) : undefined;
   const search = params.search;
 
   const queryParams = new URLSearchParams();
   if (categoryId) queryParams.set("categoryId", categoryId.toString());
+  if (brandId) queryParams.set("brandId", brandId.toString());
   if (search) queryParams.set("search", search);
-  queryParams.set("page", currentPage.toString())
-  const res = await fetch(`${baseUrl}/api/products?${queryParams.toString()}`, {
-    cache: "no-store",
-  });
-  const data = await res.json();
+  queryParams.set("page", currentPage.toString());
 
-  const categories = await getAllCategories();
+  const categories = await getAllCategories(null, { onlyActive: true });
+  const brands = await getAllBrands(null, { onlyActive: true });
+  const products = await getAllProducts(
+    currentPage,
+    search,
+    brandId,
+    categoryId,
+  );
+  const data = await products;
 
-  const totalProducts = data.count;
+  const totalProducts = products.count!;
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
 
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="font-serif text-3xl font-bold mb-2">Search For Products</h1>
+          <h1 className="font-serif text-3xl font-bold mb-2">
+            ابحث عن المنتجات
+          </h1>
           <p className="text-muted-foreground">
-            Discover our complete collection of natural skincare
+            اكتشف كل منتجاتنا الطازجة والمجمدة والمستلزمات الغذائية
           </p>
         </div>
 
+        {/* فلتر المنتجات */}
         <ProductsFilter
           categories={categories}
+          brands={brands}
           searchParams={params}
           categoryId={categoryId}
+          brandId={brandId}
           search={search}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* منتجات */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {data.products.map((product: any) => (
-            <ProductCard key={product.id} {...product} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
+        {/* الباجينيشن */}
         <PaginationComponent
           totalProducts={totalProducts}
           totalPages={totalPages}

@@ -29,12 +29,12 @@ export function OrderSummary({
 
   const handleApplyPromo = () => {
     if (!session) {
-      toast.error("Please log in to apply a promo code");
+      toast.error("من فضلك قم بتسجيل الدخول لاستخدام كود الخصم");
       return;
     }
 
     if (!promoCode.trim()) {
-      toast.error("Enter a promo code first");
+      toast.error("أدخل كود الخصم أولاً");
       return;
     }
 
@@ -42,14 +42,14 @@ export function OrderSummary({
   };
 
   return (
-    <div className="lg:col-span-1">
+    <div className="lg:col-span-1" dir="rtl">
       <div className="sticky top-24 bg-card rounded-3xl p-6 shadow-sm space-y-6">
-        <h2 className="font-serif text-2xl font-bold">Order Summary</h2>
+        <h2 className="font-serif text-2xl font-bold">ملخص الطلب</h2>
 
         <div className="flex gap-2">
           <Input
             type="text"
-            placeholder="Promo Code"
+            placeholder="كود الخصم"
             value={promoCode}
             onChange={(e) => setPromoCode(e.target.value)}
             className="rounded-full border border-primary"
@@ -59,29 +59,25 @@ export function OrderSummary({
             onClick={handleApplyPromo}
             disabled={isApplyingPromo}
           >
-            {isApplyingPromo ? "Applying..." : "Apply"}
+            {isApplyingPromo ? "جارٍ التطبيق..." : "تطبيق"}
           </Button>
         </div>
 
         <div className="space-y-3 py-4 border-y border-border">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Shipping</span>
-            <span>${shipping.toFixed(2)}</span>
+            <span className="text-foreground">الإجمالي الفرعي</span>
+            <span>{subtotal.toFixed(2)} ج.م</span>
           </div>
         </div>
 
         <div className="flex justify-between">
           <div>
-            <span className="font-semibold">Bag Total</span>
-            <span className="block text-xs text-muted-foreground">
-              {cart.length} items
+            <span className="font-semibold">الإجمالي الكلي</span>
+            <span className="block text-xs text-foreground">
+              {cart.length} منتج
             </span>
           </div>
-          <span className="text-2xl font-bold">${total.toFixed(2)}</span>
+          <span className="text-2xl font-bold">{total.toFixed(2)} ج.م</span>
         </div>
 
         <Button
@@ -89,11 +85,11 @@ export function OrderSummary({
           className="w-full rounded-full"
           onClick={handleCheckout}
         >
-          Proceed To Checkout
+          إتمام الطلب
         </Button>
 
-        <p className="text-xs text-center text-muted-foreground">
-          Secure checkout powered by industry-leading encryption
+        <p className="text-xs text-center text-foreground">
+          عملية دفع آمنة ومشفرة بأعلى معايير الحماية
         </p>
       </div>
     </div>

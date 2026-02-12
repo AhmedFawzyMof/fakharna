@@ -23,7 +23,7 @@ export function CartItem({ item }: any) {
             <div className="flex-1 min-w-0">
               <h3 className="font-medium leading-tight mb-1">{item.name}</h3>
               <p className="text-xs text-muted-foreground">
-                ${item.price.toFixed(2)}
+                ج.م{item.price.toFixed(2)}
               </p>
             </div>
             <Button
@@ -37,7 +37,7 @@ export function CartItem({ item }: any) {
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="font-semibold">${item.price.toFixed(2)}</span>
+            <span className="font-semibold">ج.م{item.price.toFixed(2)}</span>
 
             <div className="flex items-center gap-2 bg-secondary rounded-full px-2 py-1">
               <Button

@@ -40,26 +40,24 @@ export default function CartPage() {
         <Button variant="ghost" size="sm" className="mb-6 -ml-2" asChild>
           <Link href="/products">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Continue Shopping
+            كمل تسوق
           </Link>
         </Button>
 
         {cart.length === 0 ? (
           <div className="text-center py-16">
-            <h1 className="font-serif text-3xl font-bold mb-4">
-              Your cart is empty
-            </h1>
+            <h1 className="font-serif text-3xl font-bold mb-4">السلة فاضية</h1>
             <p className="text-muted-foreground mb-8">
-              Add some products to get started
+              ضيف شوية منتجات عشان تبدأ
             </p>
             <Button size="lg" className="rounded-full" asChild>
-              <Link href="/products">Shop Now</Link>
+              <Link href="/products">اتسوق دلوقتي</Link>
             </Button>
           </div>
         ) : (
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <h1 className="font-serif text-3xl font-bold">Shopping Bag</h1>
+              <h1 className="font-serif text-3xl font-bold">سلة المشتريات</h1>
 
               <div className="space-y-4">
                 {cart.map((item) => (
@@ -75,15 +73,15 @@ export default function CartPage() {
               />
             ) : (
               <div className="rounded-3xl p-6 bg-card shadow">
-                <h2 className="font-semibold text-lg mb-2">Login required</h2>
+                <h2 className="font-semibold text-lg mb-2">لازم تسجل دخول</h2>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Please log in to proceed to checkout.
+                  من فضلك سجل دخولك عشان تكمل عملية الشراء.
                 </p>
                 <Button
                   className="w-full rounded"
                   onClick={() => router.push("/login?callbackUrl=/cart")}
                 >
-                  Login to Checkout
+                  سجل دخول عشان تكمل الشراء
                 </Button>
               </div>
             )}

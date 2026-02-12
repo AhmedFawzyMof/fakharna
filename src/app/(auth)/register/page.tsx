@@ -47,13 +47,13 @@ export default function RegisterPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data?.message || "Something went wrong");
+        throw new Error(data?.message || "حدث خطأ ما");
       }
 
-      toast.success("Account created successfully!");
+      toast.success("تم إنشاء الحساب بنجاح!");
       router.push("/login");
     } catch (err: any) {
-      toast.error(err.message || "Failed to create account");
+      toast.error(err.message || "فشل إنشاء الحساب");
     } finally {
       setIsLoading(false);
     }
@@ -63,21 +63,17 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <Card className="w-full max-w-md shadow-lg border-zinc-200 rounded">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">
-            Create an account
-          </CardTitle>
-          <CardDescription>
-            Enter your details to create your account
-          </CardDescription>
+          <CardTitle className="text-2xl font-bold">إنشاء حساب</CardTitle>
+          <CardDescription>أدخل بياناتك لإنشاء حسابك</CardDescription>
         </CardHeader>
 
         <CardContent className="grid gap-6">
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">الاسم</Label>
               <Input
                 id="name"
-                placeholder="Ahmed Mohamed"
+                placeholder="أحمد محمد"
                 className="border border-primary rounded bg-white"
                 required
                 value={form.name}
@@ -86,11 +82,11 @@ export default function RegisterPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">البريد الإلكتروني</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="example@email.com"
                 className="border border-primary rounded bg-white"
                 required
                 value={form.email}
@@ -99,7 +95,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">كلمة المرور</Label>
               <Input
                 id="password"
                 type="password"
@@ -117,16 +113,16 @@ export default function RegisterPage() {
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create Account
+              إنشاء الحساب
             </Button>
           </form>
         </CardContent>
 
         <CardFooter>
           <p className="text-center text-sm text-muted-foreground w-full">
-            Already have an account?{" "}
+            لديك حساب بالفعل؟{" "}
             <Button variant="link" className="p-0 h-auto font-semibold">
-              <Link href="/login">Sign in</Link>
+              <Link href="/login">تسجيل الدخول</Link>
             </Button>
           </p>
         </CardFooter>

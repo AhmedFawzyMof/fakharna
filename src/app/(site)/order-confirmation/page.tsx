@@ -6,8 +6,8 @@ export default function OrderConfirmationPage() {
   const orderNumber =
     "ORD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
   const estimatedDelivery = new Date(
-    Date.now() + 7 * 24 * 60 * 60 * 1000
-  ).toLocaleDateString("en-US", {
+    Date.now() + 7 * 24 * 60 * 60 * 1000,
+  ).toLocaleDateString("ar-EG", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -25,41 +25,28 @@ export default function OrderConfirmationPage() {
 
           {/* Success Message */}
           <div className="space-y-3">
-            <h1 className="font-serif text-4xl font-bold">Order Confirmed!</h1>
+            <h1 className="font-serif text-4xl font-bold">تم تأكيد طلبك</h1>
             <p className="text-lg text-muted-foreground">
-              Thank you for your purchase. Your order has been successfully
-              placed.
+              شكراً لطلبك من عندنا. طلبك اتسجل بنجاح وجاري تجهيزه.
             </p>
           </div>
 
           {/* Order Details */}
           <div className="bg-card rounded-3xl p-8 shadow-sm space-y-6 text-left">
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Order Number</p>
+              <p className="text-sm text-muted-foreground">رقم الطلب</p>
               <p className="text-2xl font-bold font-mono">{orderNumber}</p>
             </div>
 
             <div className="space-y-4 pt-4 border-t border-border">
               <div className="flex items-start gap-4">
                 <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
-                  <Mail className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-medium">Confirmation Email Sent</p>
-                  <p className="text-sm text-muted-foreground">
-                    We've sent a confirmation email with your order details
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-medium">Order Processing</p>
+                  <p className="font-medium">جاري تجهيز الطلب</p>
                   <p className="text-sm text-muted-foreground">
-                    Your order is being prepared for shipment
+                    بنحضر طلبك علشان يتشحن في أسرع وقت
                   </p>
                 </div>
               </div>
@@ -69,7 +56,7 @@ export default function OrderConfirmationPage() {
                   <Truck className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-medium">Estimated Delivery</p>
+                  <p className="font-medium">ميعاد التوصيل المتوقع</p>
                   <p className="text-sm text-muted-foreground">
                     {estimatedDelivery}
                   </p>
@@ -81,7 +68,7 @@ export default function OrderConfirmationPage() {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Button size="lg" className="rounded-full" asChild>
-              <Link href="/products">Continue Shopping</Link>
+              <Link href="/products">كمّل تسوق</Link>
             </Button>
             <Button
               size="lg"
@@ -89,7 +76,7 @@ export default function OrderConfirmationPage() {
               className="rounded-full bg-transparent"
               asChild
             >
-              <Link href="/">Back to Home</Link>
+              <Link href="/">ارجع للرئيسية</Link>
             </Button>
           </div>
         </div>

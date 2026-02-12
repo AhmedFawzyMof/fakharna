@@ -20,8 +20,21 @@ const slides = [
   },
 ];
 
-export function HeroCarousel() {
+export function HeroCarousel(offers: any) {
   const autoplay = useRef(Autoplay({ delay: 6000, stopOnInteraction: false }));
+  const genLink = (offer: any) => {
+    if (offer.productId) {
+      return `/product/${offer.productId}`;
+    }
+    if (offer.categoryId) {
+      return `/category/${offer.categoryId}`;
+    }
+
+    if (offer.brandId) {
+      return `/brand/${offer.brandId}`;
+    }
+    return "/search";
+  };
   return (
     <Carousel
       className="w-full"
@@ -29,12 +42,12 @@ export function HeroCarousel() {
       plugins={[autoplay.current]}
     >
       <CarouselContent>
-        {slides.map((slide, i) => (
-          <CarouselItem key={i}>
-            <Link href="/search">
-              <div className="relative h-[80vh] w-full">
+        {offers.offers.map((offer: any) => (
+          <CarouselItem key={offer.id}>
+            <Link href={genLink(offer)}>
+              <div className="relative h-[45vh] w-full">
                 <img
-                  src={slide.image}
+                  src={offer.image}
                   className="absolute inset-0 h-full w-full object-cover"
                   alt=""
                 />

@@ -4,52 +4,45 @@ import {
   getAllProducts,
   getLatestProducts,
 } from "@/models/products";
+import { tryCatch } from "@/lib/tryCatch";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const latest = searchParams.get("latest");
-    const page = searchParams.get("page");
+    const page = searchParams.get("page") || 1;
     const categoryId = searchParams.get("categoryId");
     const search = searchParams.get("search");
-    const limit = 24;
-    let offset = 0;
 
-    if (Number(page) > 1) {
-      offset = limit / (Number(page) - 1);
+    if (!latest) {
+      const { data, error } = await tryCatch(() =>
+        getAllProducts(Number(page), search, Number(categoryId)),
+      );
+
+      if (error) {
+        return NextResponse.json(
+          { error: "Failed to fetch products" },
+          { status: 500 },
+        );
+      }
+
+      return NextResponse.json(data);
     }
 
-    let data;
+    const { data, error } = await tryCatch(() => getLatestProducts());
 
-    if (latest) {
-      data = await getLatestProducts();
-    } else {
-      data = await getAllProducts(
-        limit,
-        offset ? Number(offset) : undefined,
-        categoryId ? Number(categoryId) : undefined,
-        search ? search : undefined,
+    if (error) {
+      return NextResponse.json(
+        { error: "Failed to fetch products" },
+        { status: 500 },
       );
     }
+
     return NextResponse.json(data);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
       { error: "Failed to fetch products" },
-      { status: 500 },
-    );
-  }
-}
-
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const product = await createProduct(body);
-    return NextResponse.json(product, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Failed to create product" },
       { status: 500 },
     );
   }

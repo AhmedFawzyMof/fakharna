@@ -5,6 +5,7 @@ interface CartItem {
   id: string;
   name: string;
   price: number;
+  type: string;
   quantity: number;
   image: string;
 }
@@ -36,6 +37,23 @@ interface CartState {
   clearCart: () => void;
 }
 
+const getMin = (type: string) => (type === "unit" ? 1 : 0.25);
+const getStep = (type: string) => (type === "unit" ? 1 : 0.25);
+
+const normalizeQuantity = (type: string, quantity: number) => {
+  const min = getMin(type);
+  const step = getStep(type);
+
+  if (quantity < min) return min;
+
+  if (type === "unit") {
+    return Math.floor(quantity);
+  }
+
+  const fixed = Math.round(quantity / step) * step;
+  return parseFloat(fixed.toFixed(3));
+};
+
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
@@ -44,19 +62,26 @@ export const useCartStore = create<CartState>()(
 
       addToCart: (item) =>
         set((state) => {
+          const normalizedQty = normalizeQuantity(item.type, item.quantity);
+
           const existing = state.cart.find((i) => i.id === item.id);
 
           if (existing) {
+            const newQty = normalizeQuantity(
+              item.type,
+              existing.quantity + normalizedQty,
+            );
+
             return {
               cart: state.cart.map((i) =>
-                i.id === item.id
-                  ? { ...i, quantity: i.quantity + item.quantity }
-                  : i,
+                i.id === item.id ? { ...i, quantity: newQty } : i,
               ),
             };
           }
 
-          return { cart: [...state.cart, item] };
+          return {
+            cart: [...state.cart, { ...item, quantity: normalizedQty }],
+          };
         }),
 
       removeFromCart: (id) =>
@@ -66,9 +91,14 @@ export const useCartStore = create<CartState>()(
 
       updateQuantity: (id, quantity) =>
         set((state) => ({
-          cart: state.cart.map((item) =>
-            item.id === id ? { ...item, quantity } : item,
-          ),
+          cart: state.cart.map((item) => {
+            if (item.id !== id) return item;
+
+            return {
+              ...item,
+              quantity: normalizeQuantity(item.type, quantity),
+            };
+          }),
         })),
 
       clearCart: () =>
