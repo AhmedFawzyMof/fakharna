@@ -5,11 +5,11 @@ import cloudinary, { getPublicIdFromCloudinaryUrl } from "@/lib/cloudinary";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const id = Number(params.id);
+  const { id } = await context.params;
 
-  if (isNaN(id))
+  if (isNaN(Number(id)))
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
 
   const body = await req.json();
@@ -19,7 +19,9 @@ export async function PUT(
     if (public_id) await cloudinary.uploader.destroy(public_id);
   }
 
-  const { data: _, error } = await tryCatch(() => updateOffer(id, body));
+  const { data: _, error } = await tryCatch(() =>
+    updateOffer(Number(id), body),
+  );
 
   if (error)
     return NextResponse.json(

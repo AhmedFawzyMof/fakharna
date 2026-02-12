@@ -4,10 +4,9 @@ import { updatePromoCode } from "@/models/promo_codes";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
-
+  const { id } = await context.params;
   if (isNaN(Number(id))) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }

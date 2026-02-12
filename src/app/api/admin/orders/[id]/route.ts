@@ -8,9 +8,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
+  const { id } = await context.params;
   const orderId = parseInt(id);
 
   if (isNaN(orderId)) {
@@ -35,9 +35,9 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
+  const { id } = await context.params;
   const body = await req.json();
 
   if (isNaN(Number(id))) {
@@ -94,9 +94,9 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
+  const { id } = await context.params;
 
   const queryParams = req.nextUrl.searchParams;
   const orderItemId = queryParams.get("id");
