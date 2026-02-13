@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
-const ALLOWED_ORIGIN = "http://localhost:5173";
+const ALLOWED_ORIGIN = "https://admin-app-tjbd.vercel.app";
 const PUBLIC_ROUTES = ["/api/admin/login"];
 
 function withCors(response: NextResponse) {
