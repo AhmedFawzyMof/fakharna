@@ -8,10 +8,8 @@ import { toast } from "sonner";
 import { usePromoCodeMutation } from "../action";
 
 export function OrderSummary({
-  shipping,
   handleCheckout,
 }: {
-  shipping: number;
   handleCheckout: () => void;
 }) {
   const [promoCode, setPromoCode] = useState("");
@@ -19,7 +17,7 @@ export function OrderSummary({
     useCartStore();
   const { data: session } = useSession();
 
-  const total = getTotal() + shipping;
+  const total = getTotal();
   const subtotal = getSubtotal();
   const { mutate: applyPromoMutation, isPending: isApplyingPromo } =
     usePromoCodeMutation({

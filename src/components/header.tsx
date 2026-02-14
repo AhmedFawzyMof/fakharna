@@ -34,6 +34,12 @@ export function Header() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
           <Link
+            href="/"
+            className="text-muted-foreground transition-colors hover:text-primary"
+          >
+            الرئيسية
+          </Link>
+          <Link
             href="/products"
             className="text-muted-foreground transition-colors hover:text-primary"
           >
@@ -49,7 +55,7 @@ export function Header() {
             href="/brands"
             className="text-muted-foreground transition-colors hover:text-primary"
           >
-            الماركات
+            الشركات
           </Link>
           <Link
             href="/favorites"
@@ -131,6 +137,13 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
             >
+              الرئيسية
+            </Link>
+            <Link
+              href="/products"
+              onClick={() => setMenuOpen(false)}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
               المنتجات
             </Link>
             <Link
@@ -145,7 +158,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
             >
-              الماركات
+              الشركات
             </Link>
             <Link
               href="/favorites"
@@ -168,15 +181,25 @@ export function Header() {
             >
               عن الدكانه
             </Link>
-            <Link href="/login" onClick={() => setMenuOpen(false)}>
+            {session ? (
               <Button
-                variant="default"
                 size="sm"
-                className="w-full rounded-full mt-1"
+                className="inline-flex rounded-full px-5"
+                onClick={() => signOut()}
               >
-                تسجيل الدخول
+                تسجيل الخروج
               </Button>
-            </Link>
+            ) : (
+              <Link href="/login" onClick={() => setMenuOpen(false)}>
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="w-full rounded-full mt-1"
+                >
+                  تسجيل الدخول
+                </Button>
+              </Link>
+            )}
           </nav>
         </div>
       )}

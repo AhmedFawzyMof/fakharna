@@ -1,11 +1,12 @@
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductByBrand } from "@/models/products";
 import Pagination from "@/components/pagination";
 import { getBrandById } from "@/models/brands";
+import { getAuthSession } from "@/lib/auth-session";
 
 const PRODUCTS_PER_PAGE = 20;
 
@@ -19,6 +20,7 @@ interface BrandPageProps {
 export default async function BrandPage(props: BrandPageProps) {
   const brandParams = await props.params;
   const params = await props.searchParams;
+  const session = await getAuthSession();
 
   const currentPage = Number(params.page || 1);
 
@@ -34,6 +36,7 @@ export default async function BrandPage(props: BrandPageProps) {
   const brandProducts = await getProductByBrand(
     Number(brandParams.id),
     currentPage,
+    { session },
   );
 
   const totalProducts = brandProducts.count!;

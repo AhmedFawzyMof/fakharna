@@ -83,7 +83,12 @@ export default function RootLayout({
           {children}
           <BottomTabs />
         </Providers>
-        <Toaster position="top-right" />
+        <Toaster
+          position="bottom-right"
+          richColors
+          toastOptions={{ duration: 5000 }}
+          closeButton
+        />
       </body>
     </html>
   );

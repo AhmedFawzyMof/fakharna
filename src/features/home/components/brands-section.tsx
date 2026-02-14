@@ -3,74 +3,89 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function BrandsSection(brands: any) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scroll = (dir: "left" | "right") => {
+  const isDown = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const isPaused = useRef(false);
+
+  const startDrag = (pageX: number) => {
     if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({
-      left: dir === "left" ? -240 : 240,
-      behavior: "smooth",
-    });
+    isDown.current = true;
+    startX.current = pageX - scrollRef.current.offsetLeft;
+    scrollLeft.current = scrollRef.current.scrollLeft;
   };
 
+  const moveDrag = (pageX: number) => {
+    if (!isDown.current || !scrollRef.current) return;
+    const x = pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    scrollRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
+  const stopDrag = () => {
+    isDown.current = false;
+  };
+
+  const doubledBrands = [...brands.brands, ...brands.brands];
+
   return (
-    <section dir="rtl" className="py-16">
+    <section dir="rtl" className="pt-2 pb-12">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h2 className="font-display text-3xl font-bold text-foreground">
             الشركات
           </h2>
-          <div className="flex gap-2">
-            <button
-              onClick={() => scroll("right")}
-              className="p-2 rounded-full border border-border hover:bg-muted transition-colors"
-            >
-              <ChevronRight className="h-4 w-4 text-foreground" />
-            </button>
-            <button
-              onClick={() => scroll("left")}
-              className="p-2 rounded-full border border-border hover:bg-muted transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4 text-foreground" />
-            </button>
-          </div>
         </div>
 
         <div
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto scrollbar-hide pb-4 -mx-1 px-1"
+          onMouseDown={(e) => startDrag(e.pageX)}
+          onMouseMove={(e) => moveDrag(e.pageX)}
+          onMouseUp={stopDrag}
+          onMouseLeave={() => {
+            isPaused.current = false;
+            stopDrag();
+          }}
+          onTouchStart={(e) => startDrag(e.touches[0].pageX)}
+          onTouchMove={(e) => moveDrag(e.touches[0].pageX)}
+          onTouchEnd={stopDrag}
+          onMouseEnter={() => (isPaused.current = true)}
+          className="flex gap-5 overflow-x-auto scrollbar-hide pb-4 -mx-1 px-1 cursor-grab active:cursor-grabbing select-none"
           style={{ scrollbarWidth: "none" }}
         >
-          {brands.brands.map((cat: any, i: number) => (
-            <motion.div
-              key={`${cat.nameAr}-${i}`}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="group cursor-pointer flex-shrink-0 w-40 bg-card rounded shadow"
+          {doubledBrands.map((brand: any, i: number) => (
+            <div
+              key={`${brand.nameAr}-${i}`}
+              className="group cursor-pointer flex-shrink-0 w-32 bg-background border border-border/50 rounded-2xl p-2 transition-all duration-300 hover:shadow-lg hover:border-primary/20"
             >
-              <Link href={`/brand/${cat.id}`}>
-                <div className="relative aspect-square rounded-xl overflow-hidden mb-3">
+              <Link
+                href={`/brand/${brand.id}`}
+                className="flex flex-col items-center"
+              >
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-muted">
                   <img
-                    src={cat.image!}
-                    alt={cat.nameAr}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 rounded-t"
+                    src={brand.image}
+                    alt={brand.nameAr}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    draggable={false}
                   />
                 </div>
 
-                <h3 className="font-body text-sm font-medium text-foreground text-center">
-                  {cat.nameAr}
-                </h3>
+                <div className="mt-3 text-center space-y-1">
+                  <h3 className="font-body text-sm font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                    {brand.nameAr}
+                  </h3>
 
-                <p className="text-muted-foreground text-xs text-center font-body pb-2">
-                  {cat.productCount} منتج
-                </p>
+                  <div className="inline-flex items-center px-2 py-0.5 rounded-full bg-muted text-[10px] text-muted-foreground font-medium">
+                    {brand.productCount} منتج
+                  </div>
+                </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

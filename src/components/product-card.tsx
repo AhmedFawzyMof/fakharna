@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Heart } from "lucide-react";
+import { Plus, Heart, HeartCrack } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,6 @@ export function ProductCard(data: any) {
   const product = data.product;
   const { data: session } = useSession();
   const router = useRouter();
-  const [isFavoriting, setIsFavoriting] = useState(false);
 
   const addToCart = useCartStore((state) => state.addToCart);
 
@@ -29,6 +28,7 @@ export function ProductCard(data: any) {
       quantity: 1,
       image: product.imageUrl,
     });
+    toast.success("تم اضافة المنتج للسلة بنجاح");
   };
 
   const handleFavorite = async (e: React.MouseEvent) => {
@@ -39,7 +39,6 @@ export function ProductCard(data: any) {
       return;
     }
 
-    setIsFavoriting(true);
     try {
       const response = await fetch("/api/fav", {
         method: "POST",
@@ -48,12 +47,10 @@ export function ProductCard(data: any) {
       });
 
       if (response.ok) {
-        toast.success("Added to favorites");
+        toast.success("تم اضافة المنتج للمفضلة بنجاح");
       }
     } catch (error) {
       console.error("Error adding to favorites", error);
-    } finally {
-      setIsFavoriting(false);
     }
   };
 
@@ -79,17 +76,18 @@ export function ProductCard(data: any) {
           <Button
             variant="secondary"
             size="icon"
-            disabled={isFavoriting}
-            className="absolute top-2 right-2 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm hover:bg-white"
+            className="absolute top-2 left-2 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow"
             onClick={handleFavorite}
           >
-            <Heart
-              className={`h-4 w-4 ${isFavoriting ? "fill-muted" : "hover:text-red-500"}`}
-            />
+            {Boolean(product.isFav) ? (
+              <Heart className={`h-4 w-4`} />
+            ) : (
+              <HeartCrack className="h-4 w-4" />
+            )}
           </Button>
 
           {hasDiscount && (
-            <Badge className="absolute top-2 left-2 bg-red-500 text-white">
+            <Badge className="absolute top-2 right-2 bg-red-500 text-white">
               وفر {discountPercent}%
             </Badge>
           )}

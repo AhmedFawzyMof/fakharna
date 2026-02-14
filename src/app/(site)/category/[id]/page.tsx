@@ -8,6 +8,7 @@ import { getCategoryById } from "@/models/categories";
 import { getSubcategoryByCategory } from "@/models/subcategories";
 import Pagination from "@/components/pagination";
 import { SubCategoriesSection } from "@/components/subcategory-section";
+import { getAuthSession } from "@/lib/auth-session";
 
 const PRODUCTS_PER_PAGE = 20;
 
@@ -22,6 +23,7 @@ interface CategoryPageProps {
 export default async function CategoryPage(props: CategoryPageProps) {
   const categoryParams = await props.params;
   const params = await props.searchParams;
+  const session = await getAuthSession();
 
   const currentPage = Number(params.page || 1);
   const currenSubCategory = params.subcategory;
@@ -30,9 +32,9 @@ export default async function CategoryPage(props: CategoryPageProps) {
   queryParams.set("page", currentPage.toString());
 
   const category = await getCategoryById(Number(categoryParams.id));
-  const subcategories = await getSubcategoryByCategory(
-    Number(categoryParams.id),
-  );
+  // const subcategories = await getSubcategoryByCategory(
+  //   Number(categoryParams.id),
+  // );
 
   if (!category) {
     notFound();
@@ -42,6 +44,7 @@ export default async function CategoryPage(props: CategoryPageProps) {
     Number(categoryParams.id),
     Number(currenSubCategory),
     currentPage,
+    { session },
   );
 
   const totalProducts = categoryProducts.count!;
@@ -78,9 +81,9 @@ export default async function CategoryPage(props: CategoryPageProps) {
           </div>
         </div>
       </section>
-      {subcategories.length > 0 && (
+      {/* {subcategories.length > 0 && (
         <SubCategoriesSection categories={subcategories} />
-      )}
+      )} */}
       <section className="container mx-auto px-4 pb-16">
         <div className="flex items-center justify-between mb-8">
           <h2 className="font-serif text-2xl font-bold">

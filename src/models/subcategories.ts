@@ -116,15 +116,14 @@ export async function getSubcategoryByCategory(category: number) {
       id: product_subcategories.id,
       name: product_subcategories.name,
       nameAr: product_subcategories.nameAr,
-      productCount: sql<number>`
-          count(case when ${products.isActive} = true then 1 end)
-        `,
+      productCount: sql<number>`count(case when ${products.isActive} = true then 1 end)`,
     })
     .from(product_subcategories)
-    .leftJoin(products, eq(products.subcategoryId, product_subcategories.id))
+    .innerJoin(products, eq(products.subcategoryId, product_subcategories.id))
     .where(
       and(
         eq(product_subcategories.categoryId, category),
+        eq(products.categoryId, category),
         eq(products.isActive, true),
       ),
     );

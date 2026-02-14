@@ -5,10 +5,10 @@ import Link from "next/dist/client/link";
 
 export function ProductsSection(products: any) {
   return (
-    <section dir="rtl" className="container mx-auto px-4 py-16 md:py-20">
+    <section dir="rtl" className="container mx-auto px-4 pb-12 pt-4">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="font-serif text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-l from-primary to-primary/60 bg-clip-text text-transparent py-2">
+          <h2 className=" text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-l from-primary to-primary/60 bg-clip-text text-transparent py-2">
             منتجات مميزة
           </h2>
           <div className="h-1 w-20 bg-gradient-to-r from-primary to-primary/40 mt-4 rounded-full"></div>

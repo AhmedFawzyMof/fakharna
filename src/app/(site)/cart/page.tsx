@@ -23,8 +23,6 @@ export default function CartPage() {
     }
   }, [session]);
 
-  const shipping = 4.99;
-
   const handleCheckout = () => {
     if (!session) {
       router.push("/login?callbackUrl=/cart");
@@ -67,10 +65,7 @@ export default function CartPage() {
             </div>
 
             {isAuth && session ? (
-              <OrderSummary
-                shipping={shipping}
-                handleCheckout={handleCheckout}
-              />
+              <OrderSummary handleCheckout={handleCheckout} />
             ) : (
               <div className="rounded-3xl p-6 bg-card shadow">
                 <h2 className="font-semibold text-lg mb-2">لازم تسجل دخول</h2>
